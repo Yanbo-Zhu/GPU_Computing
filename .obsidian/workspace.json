@@ -1,0 +1,224 @@
+{
+  "main": {
+    "id": "24b279ea99941ef4",
+    "type": "split",
+    "children": [
+      {
+        "id": "9439fb7863b79b34",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "726346c7d7ce0824",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "10_GPU_Computing/10_03_CUDA_Introduction/10_03_01_CUDA_Introduction.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": true,
+                "backlinkOpts": {
+                  "collapseAll": false,
+                  "extraContext": false,
+                  "sortOrder": "alphabetical",
+                  "showSearch": false,
+                  "searchQuery": "",
+                  "backlinkCollapsed": false,
+                  "unlinkedCollapsed": true
+                }
+              },
+              "icon": "lucide-file",
+              "title": "10_03_01_CUDA_Introduction"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "0f4c4ead2397a931",
+    "type": "split",
+    "children": [
+      {
+        "id": "8eb5997c74e24677",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "35f52f239a94568f",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "58d7379a2b562ebe",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": true,
+                "extraContext": true,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "b18c733d4d7f48eb",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "0898a66a6c238fe9",
+    "type": "split",
+    "children": [
+      {
+        "id": "5fc1d33438df163d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4fc72dcd067e0c35",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "98_Addons/98_01_k9s.md",
+                "collapseAll": false,
+                "extraContext": true,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for 98_01_k9s"
+            }
+          },
+          {
+            "id": "04e7983e064a4c47",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "98_Addons/98_01_k9s.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from 98_01_k9s"
+            }
+          },
+          {
+            "id": "4800af9998a2143a",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "bca12e4946bc6140",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "10_GPU_Computing/10_03_CUDA_Introduction/10_03_01_CUDA_Introduction.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "10_03_01_CUDA_Introduction 的大纲"
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "bases:创建新数据库": false,
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "zk-prefixer:创建时间戳笔记": false
+    }
+  },
+  "active": "726346c7d7ce0824",
+  "lastOpenFiles": [
+    "10_GPU_Computing/10_03_CUDA_Introduction/images/Pasted image 20251107154428.png",
+    "10_GPU_Computing/10_03_CUDA_Introduction/images/Pasted image 20251107154417.png",
+    "10_GPU_Computing/10_03_CUDA_Introduction/images/Pasted image 20251107154105.png",
+    "10_GPU_Computing/10_03_CUDA_Introduction/images/Pasted image 20251107154045.png",
+    "10_GPU_Computing/10_03_CUDA_Introduction/images/Pasted image 20251107154020.png",
+    "10_GPU_Computing/10_03_CUDA_Introduction/images/Pasted image 20251107153751.png",
+    "10_GPU_Computing/10_03_CUDA_Introduction/images/Pasted image 20251107153738.png",
+    "10_GPU_Computing/10_03_CUDA_Introduction/images/Pasted image 20251107153444.png",
+    "10_GPU_Computing/10_03_CUDA_Introduction/images/Pasted image 20251107153442.png",
+    "10_GPU_Computing/10_03_CUDA_Introduction/images/Pasted image 20251107153438.png",
+    "10_GPU_Computing/10_03_CUDA_Introduction/images/Pasted image 20251107153419.png",
+    "10_GPU_Computing/10_03_CUDA_Introduction/images",
+    "10_GPU_Computing/10_02_GPU_Hardware_Architecture/10_02_GPUHardwareArchitecture.md",
+    "10_GPU_Computing/10_03_CUDA_Introduction/10_03_01_CUDA_Introduction.md",
+    "10_GPU_Computing/10_03_CUDA_Introduction",
+    "10_GPU_Computing/10_02_GPU_Hardware_Architecture/images",
+    "10_GPU_Computing/10_02_GPU_Hardware_Architecture",
+    "10_GPU_Computing/10_01_Nividia_Microarchitectur/10_01_Chip_Microarchitectur.md",
+    "10_GPU_Computing/10_01_Nividia_Microarchitectur/images",
+    "10_GPU_Computing/10_01_Nividia_Microarchitectur",
+    "01_芯片知识总览/03_01_芯片知识总览.md",
+    "10_GPU_Computing",
+    "01_芯片知识总览/image",
+    "03_01_.md",
+    "image",
+    "01_芯片知识总览",
+    "99_01_Cloud_Operation_Track_Activity/99_01_02_AWS_CloudTrail_Cloudwatch.md",
+    "99_02_Cloud_Operation_Access_Management/99_03_IAM_AWS Identity and Access Management.md",
+    "99_01_Cloud_Operation_Track_Activity/99_01_01_AWS_Config.md",
+    "01_Network/01_99_Other/01_99_01_API_Gateway.md",
+    "01_Network/01_02_VPC/01_02_05_SecurityGroup_NetworkAccessControlLists.md",
+    "90_kubectl/90_04_kubectl_接触EKSCluster.md",
+    "98_Addons/98_01_k9s.md",
+    "02_集群环境搭建/04_02_Kubernetes集群部署.md",
+    "01_安装kubernetes/03_EKS_Anywhere.md",
+    "98_Addons/98_02_k9s_english.md",
+    "98_Addons/98_05_安裝WeaveScope_監控工具.md",
+    "98_Addons/98_04_部署Persistent Volume_PV_和PersistentVolumeClaim_PVC.md"
+  ]
+}
