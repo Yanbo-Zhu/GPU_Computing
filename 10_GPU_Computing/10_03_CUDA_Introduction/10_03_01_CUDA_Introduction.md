@@ -134,6 +134,93 @@ What is our strategy to turn this computation into a kernel that is executed in 
 
 ![[Pasted image 20251107153022.png]]
 
+```
+dim3 grid1((numElements + threadsPerBlock - 1) / threadsPerBlock);
+dim3 block1(threadsPerBlock);
+vecAdd<<<grid1, block1>>>(d_a, d_b, d_tmp, numElements);
+```
+
+
+1  `dim3 block1(threadsPerBlock);`
+这一行定义了 **线程块的大小**。
+- `dim3` 是 CUDA 的一个三维结构体，用来描述维度（x, y, z）。
+- 这里只设置 `x` 维度，即：
+    `block1.x = threadsPerBlock;   // 每个线程块里有多少个线程 block1.y = block1.z = 1;      // 默认值`
+
+例如 表示每个线程块（block）有 256 个线程（编号 0～255）。
+
+
+2
+dim3 grid1((numElements + threadsPerBlock - 1) / threadsPerBlock);
+
+这一行定义了 网格（grid）里线程块的数量。
+网格是由多个 block 组成的；block 由多个线程组成。
+我们希望能覆盖所有 numElements 个元素（每个线程处理一个元素）。
+因此计算公式是： `(numElements + threadsPerBlock - 1) / threadsPerBlock`
+- 是 C/C++ 实现上取整的写法（防止丢掉最后几个元素）。
+
+```
+numElements = 1000
+threadsPerBlock = 256
+
+```
+
+→ (1000 + 255) / 256 = 4
+
+```
+grid1.x = 4;   // 共 4 个 block
+block1.x = 256 // 每个 block 有 256 个线程
+
+```
+
+总线程数 = `4 × 256 = 1024`  
+前 1000 个线程会执行有效操作，最后 24 个线程会在 kernel 内被忽略（通过 `if (i < numElements)` 判断）。
+
+
+3
+vecAdd<<<grid1, block1>>>(d_a, d_b, d_tmp, numElements);
+
+这行代码就是 启动 kernel（核函数调用）。
+
+它在 GPU 上并行执行如下函数：
+
+### 3.2.1 含义：
+
+- `<<<grid1, block1>>>`  
+    表示启动：
+    
+    - `grid1.x` 个线程块
+        
+    - 每个块内 `block1.x` 个线程  
+        所以总线程数约为 `grid1.x * block1.x`。
+        
+- 每个线程在 GPU 上执行一次 `vecAdd()` 函数体。
+    
+- 在 kernel 内部，这些特殊变量自动可用：
+
+```
+blockIdx.x    // 当前线程块在网格中的索引
+threadIdx.x   // 当前线程在线程块中的索引
+blockDim.x    // 每个块中的线程数 (threadsPerBlock)
+```
+
+所以每个线程计算自己的全局索引：
+```
+int i = blockIdx.x * blockDim.x + threadIdx.x;
+if (i < numElements) c[i] = a[i] + b[i];
+```
+
+每个线程各自处理一个 i，实现完全并行的向量加法。
+
+
+
+4
+
+|概念|作用|类比|
+|---|---|---|
+|**grid**|整个任务的划分|全厂所有工人|
+|**block**|一组线程（一起工作的工人组）|每个车间|
+|**thread**|实际干活的单个线程|每个工人|
 
 ## 3.3 First Full CUDA Example: Vector Addition
 
@@ -176,6 +263,15 @@ What is our strategy to turn this computation into a kernel that is executed in 
 
 ![[Pasted image 20251107153751.png]]
 
+
+1 
+blockPerGrid
+- 网格是由多个 block 组成的；block 由多个线程组成。
+- 我们希望能覆盖所有 `numElements` 个元素（每个线程处理一个元素）。
+- 因此计算公式是： `(numElements) / threadsPerBlock`  
+
+`(numElements + threadsPerBlock - 1) / threadsPerBlock`  
+是 C/C++ 实现上取整的写法（防止丢掉最后几个元素）。
 
 # 5 Compilation
 
