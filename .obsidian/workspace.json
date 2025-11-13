@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "10_GPU_Computing/10_03_CUDA_Introduction/10_03_01_CUDA_Introduction.md",
+                "file": "10_GPU_Computing/10_04_ThreadCooperation/10_04_ThreadCooperation.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": true,
@@ -28,7 +28,7 @@
                 }
               },
               "icon": "lucide-file",
-              "title": "10_03_01_CUDA_Introduction"
+              "title": "10_04_ThreadCooperation"
             }
           }
         ]
@@ -152,13 +152,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "10_GPU_Computing/10_03_CUDA_Introduction/10_03_01_CUDA_Introduction.md",
+                "file": "10_GPU_Computing/10_04_ThreadCooperation/10_04_ThreadCooperation.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "10_03_01_CUDA_Introduction 的大纲"
+              "title": "10_04_ThreadCooperation 的大纲"
             }
           }
         ],
@@ -183,30 +183,31 @@
   "active": "726346c7d7ce0824",
   "lastOpenFiles": [
     "10_GPU_Computing/10_02_GPU_Hardware_Architecture/10_02_GPUHardwareArchitecture.md",
+    "10_GPU_Computing/10_01_Nividia_Microarchitectur/10_01_Chip_Microarchitectur.md",
+    "10_GPU_Computing/10_04_ThreadCooperation/10_04_ThreadCooperation.md",
+    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251112135503.png",
+    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251112135240.png",
+    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251112134706.png",
+    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251112134549.png",
+    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251112134148.png",
+    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251112134101.png",
+    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251112133625.png",
+    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251112133617.png",
+    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251112133209.png",
+    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251112133128.png",
+    "10_GPU_Computing/10_04_ThreadCooperation/images",
     "10_GPU_Computing/10_03_CUDA_Introduction/10_03_01_CUDA_Introduction.md",
-    "10_GPU_Computing/10_03_CUDA_Introduction/images/Pasted image 20251107154428.png",
-    "10_GPU_Computing/10_03_CUDA_Introduction/images/Pasted image 20251107154417.png",
-    "10_GPU_Computing/10_03_CUDA_Introduction/images/Pasted image 20251107154105.png",
-    "10_GPU_Computing/10_03_CUDA_Introduction/images/Pasted image 20251107154045.png",
-    "10_GPU_Computing/10_03_CUDA_Introduction/images/Pasted image 20251107154020.png",
-    "10_GPU_Computing/10_03_CUDA_Introduction/images/Pasted image 20251107153751.png",
-    "10_GPU_Computing/10_03_CUDA_Introduction/images/Pasted image 20251107153738.png",
-    "10_GPU_Computing/10_03_CUDA_Introduction/images/Pasted image 20251107153444.png",
-    "10_GPU_Computing/10_03_CUDA_Introduction/images/Pasted image 20251107153442.png",
-    "10_GPU_Computing/10_03_CUDA_Introduction/images/Pasted image 20251107153438.png",
+    "10_GPU_Computing/10_04_ThreadCooperation",
     "10_GPU_Computing/10_03_CUDA_Introduction/images",
     "10_GPU_Computing/10_03_CUDA_Introduction",
     "10_GPU_Computing/10_02_GPU_Hardware_Architecture/images",
     "10_GPU_Computing/10_02_GPU_Hardware_Architecture",
-    "10_GPU_Computing/10_01_Nividia_Microarchitectur/10_01_Chip_Microarchitectur.md",
     "10_GPU_Computing/10_01_Nividia_Microarchitectur/images",
     "10_GPU_Computing/10_01_Nividia_Microarchitectur",
     "01_芯片知识总览/03_01_芯片知识总览.md",
     "10_GPU_Computing",
     "01_芯片知识总览/image",
     "03_01_.md",
-    "image",
-    "01_芯片知识总览",
     "99_01_Cloud_Operation_Track_Activity/99_01_02_AWS_CloudTrail_Cloudwatch.md",
     "99_02_Cloud_Operation_Access_Management/99_03_IAM_AWS Identity and Access Management.md",
     "99_01_Cloud_Operation_Track_Activity/99_01_01_AWS_Config.md",
