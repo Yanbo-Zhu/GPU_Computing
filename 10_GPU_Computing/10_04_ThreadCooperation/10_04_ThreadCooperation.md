@@ -23,8 +23,8 @@
 
 ![[Pasted image 20251112133128.png]]
 
-![[Pasted image 20251112133209.png]]
 
+![[Pasted image 20251118224028.png]]
 
 Pointer to global Memory 就是 points to the GPU
 
@@ -106,13 +106,15 @@ only at the end are they combined into the final histogram
 • In addition all global and shared memory accesses prior to `__syncthreads()` are visible to all threads in the block 
 • All threads within the block must participate in the barrier otherwise we have a dead lock
 
+
+![[Pasted image 20251118224205.png]]
+
 ### 3.2.2 Privatization in shared memory
 
 We need synchronizations to coordinate the thread execution: 
 has to wait all threads of all blocks 
 
-
-![[Pasted image 20251112135240.png]]
+![[Pasted image 20251118224401.png]]
 
 
 ## 3.3 `__syncthreads() `在 CUDA 中的作用解释：
@@ -146,11 +148,104 @@ CUDA 的执行模型中：
 
 
 
+
+
 # 4 Memory Coarsening 
 
 • Privatization comes with an overhead: each block needs to write to the final histogram
 • Idea: Reduce the number of blocks by increasing the work of a single thread
 
-![[Pasted image 20251112135503.png]]
+![[Pasted image 20251119140038.png]]
+
+
+Interleaving is better because it loads the data closed compact data together than contiguous partitioning
+
+
+## 4.1 Coarsening with contiguous partitioning
+
+![[Pasted image 20251119140454.png]]
+
+## 4.2 Coarsening with interleaved partitioning: Memory Coalescing
+
+Coarsening with interleaved partitioning for a better memory access pattern
+
+![[Pasted image 20251119140547.png]]
+
+
+# 5 Thread Cooperation: Parallel Reduction
+
+这里的reduction不是数值相减， 而是用 parallel 减少计算次数 
+
+![[Pasted image 20251119140632.png]]
+
+
+• How do we parallelize reductions?
+• When the reduction operation is associative, we are allowed to group the data arbitrarily and perform a tree-shaped reduction:
+```
+((((((3 max 1) max 7) max 0) max 4) max 1) max 6) max 3
+=>
+((3 max 1) max (7 max 0)) max ((4 max 1) max (6 max 3))
+```
+• When the reduction operator is also commutative, we are allowed to reorder the data which enables further optimizations.
+
+
+## 5.1 Simple Reduction Kernel
+
+• We start with a simple parallel reduction on the GPU
+• We clearly need to cooperate among the threads to perform a tree-based reduction
+• We know how to coordinate inside a block
+• Let’s restrict ourselves for now to a kernel executed by a single block with B threads!
+• Each thread processes two elements, therefore we can handle up to 2xB elements.
+
+![[Pasted image 20251119140942.png]]
+
+![[Pasted image 20251119141118.png]]
+
+
+## 5.2 Minimizing control divergence
+
+![[Pasted image 20251119141137.png]]
+
+• Remember that threads in warps execute their instructions together
+• The way we have split the work among threads in each warp, so there are quickly some threads that are active and others that are not
+• Instead we can better pack the active and not-active threads together
+• This reduces divergent control flow
+
+
+![[Pasted image 20251119141205.png]]
+
+
+## 5.3 Minimizing global memory accesses
+
+So far we have accumulated the intermediate results in global memory, let’s use shared memory instead!
+
+![[Pasted image 20251119141235.png]]
+
+
+## 5.4 Hierarchical reduction for arbitrary input length
+
+• So far, we only launched a single block, restricting the maximal input length
+• We did this, as we can not synchronize threads across blocks
+• For a reduction of arbitrary input length we need to perform a hierarchical reduction:
+• We split out input into segments, each reduced independently by a block;
+• then we reduce the outputs further.
+• The final reduction happens on the host, in a separate kernel, or using atomics.
+
+![[Pasted image 20251119141332.png]]
+
+![[Pasted image 20251119141353.png]]
+
+
+## 5.5 Thread coarsening for reduced overhead
+
+• Currently, 1/2 threads are only active for loading two elements from global memory and storing their sum in shared memory
+• This is very wasteful!
+• Idea: increase the work for a single thread!
+• This optimization is called thread coarsening (and we have seen it before in the histogram as well)
+
+![[Pasted image 20251119141423.png]]
+
+
+![[Pasted image 20251119141436.png]]
 
 
