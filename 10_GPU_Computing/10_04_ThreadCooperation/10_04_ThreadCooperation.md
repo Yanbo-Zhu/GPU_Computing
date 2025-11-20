@@ -36,7 +36,6 @@ Pointer to global Memory 就是 points to the GPU
 
 
 
-
 # 3 Thread Cooperation
 
 ![[Pasted image 20251112133617.png]]
@@ -148,9 +147,100 @@ CUDA 的执行模型中：
 
 
 
+# 4 Branch Divergence
+
+“降低分支发散”就是尽量让同一个 warp 内的 32 个线程走相同的执行路径。  
+因为 GPU 按 warp 执行指令，一旦分支不同，warp 就必须**顺序执行多个分支**，性能大幅下降。
+
+在 NVIDIA GPU 中，**线程是成组执行的**。
+- 每 **32 个线程** 组成一个 **warp**（线程束）。
+- 这 32 个线程**共享同一条指令流**（SIMT：Single Instruction, Multiple Threads）。
+- 也就是说，warp 内所有线程 **必须同时执行同一条指令**，只是操作的数据不同。
+
+分支发散（Branch Divergence）是什么意思？
+当 warp 内的线程遇到 `if`、`else`、`switch` 这种分支语句时：
+
+```
+if (threadIdx.x < 16) {
+    a[idx] *= 2;
+} else {
+    a[idx] *= 3;
+}
+
+```
 
 
-# 4 Memory Coarsening 
+对于一个 warp（32 个线程）：
+- 前 16 个线程进入了 `if` 分支，
+- 后 16 个线程进入了 `else` 分支。
+
+GPU 不能真正地同时执行两个分支，于是会：
+1. **先执行 `if` 分支**（只激活那 16 个线程，其他 16 个闲着），
+2. 再 **执行 `else` 分支**（激活另外 16 个线程）。
+
+这就意味着：
+
+> 原本 32 个线程可以并行执行，现在只能分两次执行。  
+> 性能相当于降低了一半。
+
+这种情况就叫 **warp divergence（分支发散）**。
+
+
+----
+为什么要“降低分支发散”
+
+因为它会：
+- 降低并行度；
+- 增加执行时间；
+- 让某些线程处于 idle 状态（等待其他分支执行完）。
+
+换句话说：
+> GPU 只有在 warp 内所有线程执行同一条路径时，才能真正实现“满速”并行。
+
+
+
+## 4.1 如何降低分支发散（几种方法）
+
+1️⃣ 保证 warp 内线程处理**相似的数据或任务**
+
+比如：
+
+`int idx = threadIdx.x + blockIdx.x * blockDim.x; if (idx < N) {...}`
+
+这是可以接受的分支，因为几乎所有 warp 的线程都会同样进入 if（除了最后一个 warp 可能部分越界）。
+
+但如果写：
+
+`if (in[idx] > 0) {...} else {...}`
+
+而 `in[idx]` 随机分布在正负之间，那么 warp 内线程很可能一半走 if，一半走 else，就会严重发散。
+
+👉 改进：  
+用掩码或数学运算替代条件分支，比如：
+
+`a[idx] *= (in[idx] > 0 ? 1 : -1);`
+
+或使用 `fmaxf`, `fminf` 等内建函数避免显式 if-else。
+
+---
+
+2️⃣ 在算法层面重新安排任务
+
+让同一个 warp 内的线程负责**同一种操作类型**。  
+例如：
+- 在 scan、reduce 等算法中，确保每个线程在同一个阶段执行相同的步长逻辑；
+- 把特殊处理（例如边界处理）交给单独的 warp 或最后一个 block。
+
+---
+
+3️⃣ 使用 warp-level 原语
+
+CUDA 提供了 **warp-level intrinsics**（如 `__shfl_xor_sync`、`__ballot_sync`），可以在 warp 内高效通信，而不需要 `if` 分支来区分不同线程。
+
+
+# 5 thread Coarsening 
+
+- 线程粗化（thread coarsening）：每个线程处理多个复数对；
 
 • Privatization comes with an overhead: each block needs to write to the final histogram
 • Idea: Reduce the number of blocks by increasing the work of a single thread
@@ -161,18 +251,29 @@ CUDA 的执行模型中：
 Interleaving is better because it loads the data closed compact data together than contiguous partitioning
 
 
-## 4.1 Coarsening with contiguous partitioning
+## 5.1 thread Coarsening with contiguous partitioning
 
 ![[Pasted image 20251119140454.png]]
 
-## 4.2 Coarsening with interleaved partitioning: Memory Coalescing
+# 6 Memory Coalescing
+
+
+
+![[Pasted image 20251119155258.png]]
+
+When a warp executes an instruction that accesses global memory, the individual memory accesses are coalesced into one or more memory transactions
+• Memory transactions are either 32-, 64-, or 128-byte wide
+• It is particularly beneficial when the threads in the warp ==access consecutive memory locations==, as the least number of memory transfers must be performed
+
+
+## 6.1 thread Coarsening with interleaved partitioning: 
 
 Coarsening with interleaved partitioning for a better memory access pattern
 
 ![[Pasted image 20251119140547.png]]
 
 
-# 5 Thread Cooperation: Parallel Reduction
+# 7 Thread Cooperation: Parallel Reduction
 
 这里的reduction不是数值相减， 而是用 parallel 减少计算次数 
 
@@ -189,7 +290,7 @@ Coarsening with interleaved partitioning for a better memory access pattern
 • When the reduction operator is also commutative, we are allowed to reorder the data which enables further optimizations.
 
 
-## 5.1 Simple Reduction Kernel
+## 7.1 Simple Reduction Kernel
 
 • We start with a simple parallel reduction on the GPU
 • We clearly need to cooperate among the threads to perform a tree-based reduction
@@ -202,7 +303,11 @@ Coarsening with interleaved partitioning for a better memory access pattern
 ![[Pasted image 20251119141118.png]]
 
 
-## 5.2 Minimizing control divergence
+## 7.2 Minimizing control divergence / reduce divergence
+
+降低分支发散：尽量让 warp 内线程走同一路；
+
+
 
 ![[Pasted image 20251119141137.png]]
 
@@ -215,14 +320,16 @@ Coarsening with interleaved partitioning for a better memory access pattern
 ![[Pasted image 20251119141205.png]]
 
 
-## 5.3 Minimizing global memory accesses
+## 7.3 Minimizing global memory accesses
 
 So far we have accumulated the intermediate results in global memory, let’s use shared memory instead!
+
+利用共享内存：每个 block 内做分层前缀，减少全局访存；
 
 ![[Pasted image 20251119141235.png]]
 
 
-## 5.4 Hierarchical reduction for arbitrary input length
+## 7.4 Hierarchical reduction for arbitrary input length
 
 • So far, we only launched a single block, restricting the maximal input length
 • We did this, as we can not synchronize threads across blocks
@@ -236,7 +343,7 @@ So far we have accumulated the intermediate results in global memory, let’s us
 ![[Pasted image 20251119141353.png]]
 
 
-## 5.5 Thread coarsening for reduced overhead
+## 7.5 Thread coarsening for reduced overhead
 
 • Currently, 1/2 threads are only active for loading two elements from global memory and storing their sum in shared memory
 • This is very wasteful!

@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "10_GPU_Computing/10_04_ThreadCooperation/10_04_ThreadCooperation.md",
+                "file": "10_GPU_Computing/10_03_CUDA_Introduction/10_03_01_CUDA_Introduction.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": true,
@@ -28,7 +28,7 @@
                 }
               },
               "icon": "lucide-file",
-              "title": "10_04_ThreadCooperation"
+              "title": "10_03_01_CUDA_Introduction"
             }
           }
         ]
@@ -152,13 +152,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "10_GPU_Computing/10_04_ThreadCooperation/10_04_ThreadCooperation.md",
+                "file": "10_GPU_Computing/10_03_CUDA_Introduction/10_03_01_CUDA_Introduction.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "10_04_ThreadCooperation 的大纲"
+              "title": "10_03_01_CUDA_Introduction 的大纲"
             }
           }
         ],
@@ -182,6 +182,9 @@
   },
   "active": "726346c7d7ce0824",
   "lastOpenFiles": [
+    "10_GPU_Computing/10_04_ThreadCooperation/10_04_ThreadCooperation.md",
+    "10_GPU_Computing/10_03_CUDA_Introduction/10_03_01_CUDA_Introduction.md",
+    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251119155258.png",
     "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251119141436.png",
     "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251119141423.png",
     "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251119141353.png",
@@ -191,13 +194,9 @@
     "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251119141137.png",
     "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251119141118.png",
     "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251119140942.png",
-    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251119140632.png",
-    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251119140547.png",
     "10_GPU_Computing/10_02_GPU_Hardware_Architecture/10_02_GPUHardwareArchitecture.md",
     "10_GPU_Computing/10_01_Nividia_Microarchitectur/10_01_Chip_Microarchitectur.md",
-    "10_GPU_Computing/10_04_ThreadCooperation/10_04_ThreadCooperation.md",
     "10_GPU_Computing/10_04_ThreadCooperation/images",
-    "10_GPU_Computing/10_03_CUDA_Introduction/10_03_01_CUDA_Introduction.md",
     "10_GPU_Computing/10_04_ThreadCooperation",
     "10_GPU_Computing/10_03_CUDA_Introduction/images",
     "10_GPU_Computing/10_03_CUDA_Introduction",
