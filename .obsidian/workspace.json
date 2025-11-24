@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "10_GPU_Computing/10_03_CUDA_Introduction/10_03_01_CUDA_Introduction.md",
+                "file": "10_GPU_Computing/10_05_Streams/10_05_Streams.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": true,
@@ -28,7 +28,7 @@
                 }
               },
               "icon": "lucide-file",
-              "title": "10_03_01_CUDA_Introduction"
+              "title": "10_05_Streams"
             }
           }
         ]
@@ -152,13 +152,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "10_GPU_Computing/10_03_CUDA_Introduction/10_03_01_CUDA_Introduction.md",
+                "file": "10_GPU_Computing/10_05_Streams/10_05_Streams.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "10_03_01_CUDA_Introduction 的大纲"
+              "title": "10_05_Streams 的大纲"
             }
           }
         ],
@@ -182,19 +182,26 @@
   },
   "active": "726346c7d7ce0824",
   "lastOpenFiles": [
-    "10_GPU_Computing/10_04_ThreadCooperation/10_04_ThreadCooperation.md",
-    "10_GPU_Computing/10_03_CUDA_Introduction/10_03_01_CUDA_Introduction.md",
-    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251119155258.png",
-    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251119141436.png",
-    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251119141423.png",
-    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251119141353.png",
-    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251119141332.png",
-    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251119141235.png",
-    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251119141205.png",
-    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251119141137.png",
-    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251119141118.png",
-    "10_GPU_Computing/10_04_ThreadCooperation/images/Pasted image 20251119140942.png",
+    "10_GPU_Computing/10_05_Streams/images/Pasted image 20251124113757.png",
+    "10_GPU_Computing/10_05_Streams/images/Pasted image 20251124113652.png",
+    "10_GPU_Computing/10_05_Streams/images/Pasted image 20251124113537.png",
+    "10_GPU_Computing/10_05_Streams/images/Pasted image 20251124113528.png",
+    "10_GPU_Computing/10_05_Streams/images/Pasted image 20251124113214.png",
+    "10_GPU_Computing/10_05_Streams/images/Pasted image 20251124113120.png",
+    "10_GPU_Computing/10_05_Streams/images/Pasted image 20251124112519.png",
+    "10_GPU_Computing/10_05_Streams/images/Pasted image 20251124112246.png",
+    "10_GPU_Computing/10_05_Streams/images/Pasted image 20251124112206.png",
+    "100_相关C++知识/100_01_指针/100_01_01_指针.md",
+    "10_GPU_Computing/10_05_Streams/10_05_Streams.md",
+    "10_GPU_Computing/10_05_Streams/images/Pasted image 20251124105631.png",
+    "10_GPU_Computing/10_05_Streams/images/Pasted image 20251124105448.png",
+    "10_GPU_Computing/10_05_Streams/images",
+    "10_GPU_Computing/10_05_Streams",
     "10_GPU_Computing/10_02_GPU_Hardware_Architecture/10_02_GPUHardwareArchitecture.md",
+    "100_相关C++知识/100_01_指针",
+    "100_相关C++知识",
+    "10_GPU_Computing/10_03_CUDA_Introduction/10_03_01_CUDA_Introduction.md",
+    "10_GPU_Computing/10_04_ThreadCooperation/10_04_ThreadCooperation.md",
     "10_GPU_Computing/10_01_Nividia_Microarchitectur/10_01_Chip_Microarchitectur.md",
     "10_GPU_Computing/10_04_ThreadCooperation/images",
     "10_GPU_Computing/10_04_ThreadCooperation",
@@ -202,11 +209,7 @@
     "10_GPU_Computing/10_03_CUDA_Introduction",
     "10_GPU_Computing/10_02_GPU_Hardware_Architecture/images",
     "10_GPU_Computing/10_02_GPU_Hardware_Architecture",
-    "10_GPU_Computing/10_01_Nividia_Microarchitectur/images",
-    "10_GPU_Computing/10_01_Nividia_Microarchitectur",
     "01_芯片知识总览/03_01_芯片知识总览.md",
-    "10_GPU_Computing",
-    "01_芯片知识总览/image",
     "03_01_.md",
     "99_01_Cloud_Operation_Track_Activity/99_01_02_AWS_CloudTrail_Cloudwatch.md",
     "99_02_Cloud_Operation_Access_Management/99_03_IAM_AWS Identity and Access Management.md",
