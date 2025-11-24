@@ -147,7 +147,7 @@ CUDA 的执行模型中：
 
 
 
-# 4 Branch Divergence
+# 4 Branch Divergence、 Warp Divergence
 
 “降低分支发散”就是尽量让同一个 warp 内的 32 个线程走相同的执行路径。  
 因为 GPU 按 warp 执行指令，一旦分支不同，warp 就必须**顺序执行多个分支**，性能大幅下降。
