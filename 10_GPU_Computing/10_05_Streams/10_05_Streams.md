@@ -325,13 +325,93 @@ Bad Occupancy due to Memory Resource Constraints
 • All blocks on the SM share the same shared memory
 
 Bad Example 3:
-• Blocks of size 512, each block allocates 35KB shared memory
-=" SM executes 1 block (as 2*35KB > 64 KB shared memory)
+• Blocks of size 512（Thread）, each block allocates 35KB shared memory
+=" SM executes 1 block (as `2*35KB` > 64 KB shared memory)
 Occupancy 50% (= 512 / 1024)
 
+---
+
+Performance Cliffs
+
+• Assume, we have a kernel that uses 63 registers per thread, no shared memory and we launch it with 256 threads per block
+=> " SM executes 4 blocks and uses 64,512 (< 65,536) registers Occupancy: `100% (4*256 / 1024)`
+• If we now need 2 more registers …
+=> " SM executes 3 blocks as 4 would need 66,560 > 65,536 registers
+
+Occupancy: `75% (3*256 / 1024)`
+• Sometimes, slight increases in resource usage result in significant loss in performance
+
+## 6.2 Occupancy Calculator
 
 
-# 7 Nsight Compute
+The Nsight Compute profiler contains the occupancy calculator which helps to select good launch configurations and to avoid performance cliffs
+
+![[Pasted image 20251124212349.png]]
+
+
+# 7 Limits of Performance = Compute + Memory
+
+• Performance of our software is limited (or bound) by the compute and memory capabilities of our hardware
+• We measure our compute throughput in floating operations per second (FLOP/s)
+• We measure our memory throughput in bytes per second (byte/s)
+• Knowing these limits is helpful to know if your program is making good use of the available hardware resources.
+
+
+## 7.1 Compute Throughput in FLOP/S
+
+
+Theoretical limit of compute throughput
+• If we would always be able to fill all computational units, how much floating point computations could we perform?
+• This is a purely theoretical number, that we can compute based on the hardware characteristics.
+• The Tesla T4 has 2560 CUDA cores, each can perform a fused-multiply add (which are 2 instructions) in one clock cycle, at 1.590 GHz: 2560 * 2 * 1.590 = 8140.8 GFLOP/s = 8.1 TFLOP/s
+
+![[Pasted image 20251124212709.png]]
+
+## 7.2 Memory Throughput in Bytes/S
+
+Theoretical limit of memory throughput
+• How much bytes can we move through the memory bus?
+• This is also a purely theoretical number, that we can compute based on the hardware characteristics.
+• The global memory of the Tesla T4 is GDDR6 with a throughput of 320 GB/s 320
+
+![[Pasted image 20251124212736.png]]
+
+
+## 7.3 Combining Both Metrics in a Single Model
+
+• We can combine both metrics into a single plot, if we convert the one into the other
+• We call the one axis: Performance (FLOP/s)
+• We call the other axis: Arithmetic Intensity (FLOP/byte)
+• ==Arithmetic intensity is computed by taking the number of instructions and diving them by the memory traffic that occurs while performing the work.==
+	• **算术强度（Arithmetic intensity）** 是通过将指令数量除以在执行这些工作时产生的内存流量来计算的。
+
+![[Pasted image 20251124212933.png]]
+
+## 7.4 The Roofline Model
+
+• We can now draw the theoretical limits into this plot:
+![[Pasted image 20251124213057.png]]
+
+The solid line is the roofline that we can never cross.
+It is computed as the minimum of the peak performance π
+and the peak bandwidth β times the arithmetic intensity I
+
+
+Ridge 山脊 
+山脊，山脉；屋脊；隆起部分，脊状突起；（大气层的）高压脊，高压带
+
+![[Pasted image 20251124213110.png]]
+
+
+![[Pasted image 20251124213332.png]]
+
+• Different applications have different arithmetic intensities: a vector addition just has a lower arithmetic intensity than a matrix multiply
+• So we can generally only try to improve performance by moving up on the plot not to the right by better utilizing the available resources
+
+• 不同的应用具有不同的算术强度：例如，向量加法的算术强度就比矩阵乘法低。  
+• 因此，我们通常只能通过在图中向上移动来提高性能，而不是通过向右移动（即通过更好地利用可用资源）。
+
+# 8 Nsight Compute
 
 
 • Nsight Compute is Nvidia’s profiler for CUDA code
@@ -343,7 +423,7 @@ Occupancy 50% (= 512 / 1024)
 
 ![[Pasted image 20251124113652.png]]
 
-## 7.1 Profiling With Nsight Compute
+## 8.1 Profiling With Nsight Compute
 
 • Nsight Computer is a GUI application to look at the recorded profiles
 
