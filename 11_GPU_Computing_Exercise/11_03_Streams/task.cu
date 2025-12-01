@@ -159,8 +159,8 @@ void matrixMultiplyNoStreams()
         dim3 blocksPerGrid(MATRIX_SIZE/TILE_SIZE, MATRIX_SIZE/TILE_SIZE);
 
         std::cout << "Launch kernel with " << blocksPerGrid.x * blocksPerGrid.y << " blocks each with " << threadsPerBlock.x * threadsPerBlock.y << " threads\n";
-        matrixMultiplyKernel<<<blocksPerGrid, threadsPerBlock>>>(d_A[i], d_B[i], d_C[i], MATRIX_SIZE);
-        // matrixMultiplyKernelTiled<<<blocksPerGrid, threadsPerBlock>>>(d_A[i], d_B[i], d_C[i], MATRIX_SIZE);
+        //matrixMultiplyKernel<<<blocksPerGrid, threadsPerBlock>>>(d_A[i], d_B[i], d_C[i], MATRIX_SIZE);
+        matrixMultiplyKernelTiled<<<blocksPerGrid, threadsPerBlock>>>(d_A[i], d_B[i], d_C[i], MATRIX_SIZE);
         CHECK_CUDA(cudaGetLastError());
 
         // Copy results back to the host
@@ -264,18 +264,39 @@ void matrixMultiplyWithStreams()
 
 
     // Verify results (slow! use only for debugging)
+    // for (int i = 0; i < NUM_MATRICES; i++)
+    // {
+    //     std::cout << "Matrix C[" << i << "]:" << std::endl;
+    //     for (int row = 0; row < MATRIX_SIZE; row++)
+    //     {
+    //         for (int col = 0; col < MATRIX_SIZE; col++)
+    //         {
+    //             std::cout << h_C[i][row * MATRIX_SIZE + col] << " ";
+    //         }
+    //         std::cout << std::endl;
+    //     }
+    // }
+
+    double eps = 1.e-6;  // machine zero
     for (int i = 0; i < NUM_MATRICES; i++)
     {
         std::cout << "Matrix C[" << i << "]:" << std::endl;
-        for (int row = 0; row < MATRIX_SIZE; row++)
-        {
-            for (int col = 0; col < MATRIX_SIZE; col++)
-            {
-                std::cout << h_C[i][row * MATRIX_SIZE + col] << " ";
+        for (int j = 0; j < MATRIX_SIZE * MATRIX_SIZE; j++) {
+            double abs_err = fabs(h_C[i][j] - (MATRIX_SIZE * 0.01f));
+            double dot_length = MATRIX_SIZE;
+            double abs_val = fabs(h_C[i][j]);
+            double rel_err = abs_err / abs_val / dot_length;
+
+            if (rel_err > eps) {
+                printf("Error! Matrix[%05d]=%.8f, ref=%.8f error term is > %E\n",
+                    j, h_C[i][j], MATRIX_SIZE * 0.01f, eps);
             }
-            std::cout << std::endl;
         }
     }
+
+    
+ 
+
 
     // TODO: Cleanup
     for (int i = 0; i < NUM_MATRICES; ++i)
@@ -294,7 +315,7 @@ void matrixMultiplyWithStreams()
 
 int main()
 {
-    // matrixMultiplyWithStreams();
-    matrixMultiplyNoStreams();
+    matrixMultiplyWithStreams();
+    //matrixMultiplyNoStreams();
     return EXIT_SUCCESS;
 }
