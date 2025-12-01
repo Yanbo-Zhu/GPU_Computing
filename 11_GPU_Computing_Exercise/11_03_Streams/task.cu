@@ -11,7 +11,7 @@
         exit(EXIT_FAILURE);                                     \
     }
 
-const int NUM_MATRICES = 10; // Number of matrix multiplications
+const int NUM_MATRICES = 10; // Number of matrix multiplications。 The result of each multiplication is independent and is stored in a separate matrix C. 
 const int MATRIX_SIZE = 4096;
 const int TILE_SIZE = 32;
 
@@ -54,6 +54,7 @@ void matrixMultiplyNoStreams()
 
     for (int i = 0; i < NUM_MATRICES; i++)
     {
+        // Allocate host memory
         h_A[i] = (float *)malloc(MATRIX_SIZE * MATRIX_SIZE * sizeof(float));
         h_B[i] = (float *)malloc(MATRIX_SIZE * MATRIX_SIZE * sizeof(float));
         h_C[i] = (float *)malloc(MATRIX_SIZE * MATRIX_SIZE * sizeof(float));
@@ -67,6 +68,7 @@ void matrixMultiplyNoStreams()
             h_C[i][j] = 0.0f;
         }
 
+        // Allocate device memory
         CHECK_CUDA(cudaMalloc(&d_A[i], MATRIX_SIZE * MATRIX_SIZE * sizeof(float)));
         CHECK_CUDA(cudaMalloc(&d_B[i], MATRIX_SIZE * MATRIX_SIZE * sizeof(float)));
         CHECK_CUDA(cudaMalloc(&d_C[i], MATRIX_SIZE * MATRIX_SIZE * sizeof(float)));
@@ -76,6 +78,8 @@ void matrixMultiplyNoStreams()
         CHECK_CUDA(cudaMemcpy(d_B[i], h_B[i], MATRIX_SIZE * MATRIX_SIZE * sizeof(float), cudaMemcpyHostToDevice));
 
         // Launch matrix multiplication kernel
+        // Define block and grid sizes: two-dimensional grid of two-dimensional blocks
+        // there are 128x128x1024 = 16,777,216 threads in total in grid 
         dim3 threadsPerBlock(TILE_SIZE, TILE_SIZE);
         dim3 blocksPerGrid(MATRIX_SIZE/TILE_SIZE, MATRIX_SIZE/TILE_SIZE);
 
