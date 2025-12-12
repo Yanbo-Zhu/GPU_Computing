@@ -3,6 +3,8 @@
 #include <mma.h>
 #include <utility>
 
+using namespace nvcuda;
+
 #define NUM_KERNELS 16 // How many kernels we have to convolve against the input
 #define KERNEL_SIZE 16 // The length of each kernel vector, and equivalently the size of each window
 #define INPUT_SIZE (32000-1) // The length of the input vector.
@@ -133,6 +135,15 @@ void convolve_cpu2(half* out, half* input, half* kernels) {
 
 /////////////////////
 // GPU
+// GPU WMMA convolution 
+// Each chunk contains 16 windows.
+// Each window has a size of 16.
+// There are 16 convolution kernels.
+// Therefore, the matrices A, B, and C are all 16×16.
+// Each block consists of 1 warp (32 threads).
+// Each block processes one chunk.
+// The grid dimension is NUM_CHUNKS.
+
 /////////////////////
 __global__ void convolve_gpu(half* out, half* input, half* kernels) {
     // steps:
@@ -143,6 +154,67 @@ __global__ void convolve_gpu(half* out, half* input, half* kernels) {
 
     // You can orient yourself on convolve_cpu2.
     // Use the mma_sync function for matrix multiplication.
+
+    // One block processes one chunk
+    int chunk_id = blockIdx.x;
+
+    // A: CHUNK_SIZE x KERNEL_SIZE = 16x16
+    // B: KERNEL_SIZE x NUM_KERNELS = 16x16
+    // C: CHUNK_SIZE x NUM_KERNELS = 16x16
+
+    // Starting window position
+    int start_p = chunk_id * CHUNK_SIZE;
+
+    __shared__ half A_sh[CHUNK_SIZE * KERNEL_SIZE];
+    __shared__ half B_sh[KERNEL_SIZE * NUM_KERNELS];
+    __shared__ half C_sh[CHUNK_SIZE * NUM_KERNELS];
+
+    // ---------- 1. Load A tile ----------
+    // A(w, o) = input[start_p + w + o]
+    int tid = threadIdx.x;
+
+    // A tile (16x16 = 256 elements), loaded with 32 threads
+    for (int i = tid; i < CHUNK_SIZE * KERNEL_SIZE; i += blockDim.x) {
+        int w = i / KERNEL_SIZE;  // 0..15
+        int o = i % KERNEL_SIZE;  // 0..15
+        A_sh[i] = input[start_p + w + o];
+    }
+
+    // ---------- 2. Load B tile ----------
+    // B(o, k) = kernels[o + k*KERNEL_SIZE]
+    for (int i = tid; i < KERNEL_SIZE * NUM_KERNELS; i += blockDim.x) {
+        B_sh[i] = kernels[i];
+    }
+
+    __syncthreads();
+
+    // ---------- 3. WMMA fragments ----------
+    wmma::fragment<wmma::matrix_a, 16, 16, 16, half, wmma::row_major> frag_A;
+    wmma::fragment<wmma::matrix_b, 16, 16, 16, half, wmma::row_major> frag_B;
+    wmma::fragment<wmma::accumulator, 16, 16, 16, half> frag_C;
+
+    wmma::fill_fragment(frag_C, __float2half(0.0f));
+
+    // ---------- 4. Load tiles into WMMA fragments ----------
+    wmma::load_matrix_sync(frag_A, A_sh, KERNEL_SIZE);
+    wmma::load_matrix_sync(frag_B, B_sh, NUM_KERNELS);
+
+    // ---------- 5. Tensor Core matrix multiplication ----------
+    wmma::mma_sync(frag_C, frag_A, frag_B, frag_C);
+
+    // ---------- 6. Store result C ----------
+    wmma::store_matrix_sync(C_sh, frag_C, NUM_KERNELS, wmma::mem_row_major);
+
+    __syncthreads();
+
+    // ---------- 7. Write back to global memory ----------
+    
+    for (int i = tid; i < CHUNK_SIZE * NUM_KERNELS; i += blockDim.x) {
+        int w = i / NUM_KERNELS;
+        int k = i % NUM_KERNELS;
+        int p = start_p + w;
+        out[p * NUM_KERNELS + k] = C_sh[i];
+    }
 }
 
 int main() {
@@ -171,7 +243,9 @@ int main() {
     ///////////////////
 
     // TODO: choose correct kernel launch parameters, and implement convolve_gpu.
-    convolve_gpu<<<1, 1>>>(gpu_out, gpu_input, gpu_kernels);
+    dim3 block(32);           // One warp. use blocks of size 32, so that each block only consists of a single warp.
+    dim3 grid(NUM_CHUNKS);    // One chunk → One block
+    convolve_gpu<<<grid, block>>>(gpu_out, gpu_input, gpu_kernels);
 
     ///////////////////
     // COMPARE

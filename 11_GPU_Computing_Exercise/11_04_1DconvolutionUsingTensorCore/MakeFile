@@ -1,0 +1,27 @@
+# Compiler
+NVCC        := nvcc
+
+# Target executable name
+TARGET      := task
+
+# CUDA source file
+SRC         := task.cu
+
+# Compiler flags
+NVCC_FLAGS  := -O3 -std=c++20 --ptxas-options=-v -arch=sm_70
+
+# ----------------------------------------------------------------
+# Build rules
+# ----------------------------------------------------------------
+
+all: $(TARGET)
+
+$(TARGET): $(SRC)
+	$(NVCC) $(NVCC_FLAGS) -o $@ $^
+
+# ----------------------------------------------------------------
+# Clean
+# ----------------------------------------------------------------
+
+clean:
+	rm -f $(TARGET) *.o
