@@ -2343,3 +2343,9 @@ F_radial_rings_bandstop,2048,Mask_bandstop_ideal,4.15549
 F_radial_rings_bandstop,2048,IFFT2,15.1636
 ```
 
+## 5.3 Performance comparision
+
+
+
+
+
