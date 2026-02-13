@@ -2343,9 +2343,43 @@ F_radial_rings_bandstop,2048,Mask_bandstop_ideal,4.15549
 F_radial_rings_bandstop,2048,IFFT2,15.1636
 ```
 
-## 5.3 Performance comparision
+## 5.3 Performance comparison
+
+total time: 
+
+| algorithm  | A           | B           | C           | D           | E           | F           |
+| ---------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- |
+| DFT in cpu | 108014.7776 | 114964.3412 | 115416.3875 | 110225.1407 | 113494.5547 | 111946.6822 |
+| FFT in cpu | 684.5656    | 661.4348    | 690.1388    | 686.0981    | 868.5792    | 683.2903    |
+| DFT in gpu | 1824.0382   | 1827.4294   | 1827.7997   | 1828.4971   | 2025.8535   | 1828.8766   |
+| FFT in gpu | 40.0649     | 40.1767     | 40.1161     | 40.5373     | 235.4811    | 39.7376     |
+
+---
 
 
+| Algorithm Comparison     |   A    |   B    |   C    |   D    |   E    |   F    |
+|--------------------------|--------|--------|--------|--------|--------|--------|
+| DFTcpu_vs_FFTcpu         | 0.9937 | 0.9942 | 0.9940 | 0.9938 | 0.9923 | 0.9939 |
+| DFTcpu_vs_DFTgpu         | 0.9831 | 0.9841 | 0.9842 | 0.9834 | 0.9822 | 0.9837 |
+| FFTcpu_vs_FFTgpu         | 0.9415 | 0.9393 | 0.9419 | 0.9409 | 0.7289 | 0.9418 |
+| DFTcpu_vs_FFTgpu         | 0.9996 | 0.9997 | 0.9997 | 0.9996 | 0.9979 | 0.9996 |
+
+- First row: the absolute value of (DFT in CPU minus FFT in CPU) divided by DFT in CPU.
+- Second row: the absolute value of (DFT in CPU minus DFT in GPU) divided by DFT in CPU.
+- Third row: the absolute value of (FFT in CPU minus FFT in GPU) divided by FFT in CPU.
+- Fourth row: the absolute value of (DFT in CPU minus FFT in GPU) divided by DFT in CPU.
 
 
+---
+
+| Algorithm Comparison              |    A      |    B      |    C      |    D      |    E      |    F      |
+|----------------------------------|-----------|-----------|-----------|-----------|-----------|-----------|
+| abs(DFTcpu-FFTcpu)/FFTcpu        | 156.7859  | 172.8105  | 166.2365  | 159.6551  | 129.6669  | 162.8347  |
+| abs(DFTcpu-DFTgpu)/DFTgpu        |  58.2174  |  61.9104  |  62.1450  |  59.2818  |  55.0231  |  60.2106  |
+| abs(FFTcpu-FFTgpu)/FFTgpu        |  16.0864  |  15.4631  |  16.2035  |  15.9251  |   2.6885  |  16.1951  |
+| abs(DFTcpu-FFTgpu)/FFTgpu        | 2694.9952 | 2860.4680 | 2876.0590 | 2718.1042 |  480.9688 | 2816.1475 |
+- The first row represents the absolute value of DFT on CPU minus FFT on CPU, divided by FFT on CPU.
+- The second row represents the absolute value of DFT on CPU minus DFT on GPU, divided by DFT on GPU.
+- The third row represents the absolute value of FFT on CPU minus FFT on GPU, divided by FFT on GPU.
+- The fourth row represents the absolute value of DFT on CPU minus FFT on GPU, divided by FFT on GPU.
 
