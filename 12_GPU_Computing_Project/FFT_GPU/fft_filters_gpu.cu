@@ -25,7 +25,7 @@
 //   nvcc -O3 -std=c++17 -arch=sm_120 fft_filters_gpu.cu -o fft_filters_gpu
 //
 // Run:
-//   ./fft_filters_gpu outdir [runs] [N]
+//   ./fft_filters_gpu outdir 3 2048
 //     outdir: output folder
 //     runs: optional, default 3
 //     N: optional, image size (NxN), default 2048 (must be power of 2)
