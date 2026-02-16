@@ -8,7 +8,7 @@
 	• Can be configured to be either controlled by hardware (“Cache”) or by the programmer in software (“Shared Memory”)
 • 16,384 32bit registers shared among 16 CUDA Cores
 
-![[Pasted image 20251112132843.png]]
+![[Pasted image 20251112132843.png]]wrap[]
 
 
 # 2 Memory Spaces 

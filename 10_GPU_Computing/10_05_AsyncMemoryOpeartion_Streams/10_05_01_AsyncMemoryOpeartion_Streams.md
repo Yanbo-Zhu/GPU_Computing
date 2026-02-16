@@ -5,10 +5,10 @@
 • A stream is a sequence of operations that executes in order on the GPU
 • The operations in multiple streams may execute simultaneously
 
-![[Pasted image 20251124105339.png]]
+![[images/Pasted image 20251124105339.png]]
 
 
-![[Pasted image 20251124105346.png]]
+![[images/Pasted image 20251124105346.png]]
 
 
 # 2 Default Stream
@@ -21,7 +21,7 @@
 	• cudaMemcpy on the same device
 
 
-![[Pasted image 20251124105448.png]]
+![[images/Pasted image 20251124105448.png]]
 
 Synchronous
 ```
@@ -57,7 +57,7 @@ cudaMemcpy ( host4, dev4, size, D2H ) ;
 
  host ‘pinned’ memory:   please do not move the memory away
 
-![[Pasted image 20251124105631.png]]
+![[images/Pasted image 20251124105631.png]]
 
 ```
 cudaStream_t stream1, stream2, stream3, stream4 ;
@@ -221,7 +221,7 @@ Copy the data from host . Those data will be processed in the stream2  in curren
 
 ## 5.1 performance guidelines and CUDA best practices
 
-![[Pasted image 20251124112206.png]]
+![[images/Pasted image 20251124112206.png]]
 
 
 ### 5.1.1 Find Ways To Parallelize Sequential Code
@@ -231,7 +231,7 @@ Copy the data from host . Those data will be processed in the stream2  in curren
 • There are many clever parallel algorithms for problems that are non-obvious to parallelize
 • An example is the prefix-sum computation
 
-![[Pasted image 20251124112246.png]]
+![[images/Pasted image 20251124112246.png]]
 
 
 ### 5.1.2 Minimize Data Transfers Between Host and Device
@@ -252,7 +252,7 @@ Reminder from prior Lecture
 • Memory transactions are either 32-, 64-, or 128-byte wide
 • It is particularly beneficial when the threads in the warp access consecutive memory locations, as the least number of memory transfers must be performed
 
-![[Pasted image 20251124112519.png]]
+![[images/Pasted image 20251124112519.png]]
 
 
 ### 5.1.5 Minimize redundant accesses to global memory whenever possible 
@@ -268,7 +268,7 @@ Reminder: Execution Model
 • The warp scheduler finds the threads from a warp that perform the same instruction and schedule them together:
 • When execution diverges some threads pause execution
 
-![[Pasted image 20251124113120.png]]
+![[images/Pasted image 20251124113120.png]]
 
 ---
 
@@ -278,7 +278,7 @@ Reminder from prior Lecture
 • Instead we can better pack the active and not-active threads together
 • This reduces divergent control flow
 
-![[Pasted image 20251124113214.png]]
+![[images/Pasted image 20251124113214.png]]
 
 
 # 6 Device Utilization & Occupancy
@@ -346,7 +346,7 @@ Occupancy: `75% (3*256 / 1024)`
 
 The Nsight Compute profiler contains the occupancy calculator which helps to select good launch configurations and to avoid performance cliffs
 
-![[Pasted image 20251124212349.png]]
+![[images/Pasted image 20251124212349.png]]
 
 
 # 7 Limits of Performance = Compute + Memory
@@ -365,7 +365,7 @@ Theoretical limit of compute throughput
 • This is a purely theoretical number, that we can compute based on the hardware characteristics.
 • The Tesla T4 has 2560 CUDA cores, each can perform a fused-multiply add (which are 2 instructions) in one clock cycle, at 1.590 GHz: 2560 * 2 * 1.590 = 8140.8 GFLOP/s = 8.1 TFLOP/s
 
-![[Pasted image 20251124212709.png]]
+![[images/Pasted image 20251124212709.png]]
 
 ## 7.2 Memory Throughput in Bytes/S
 
@@ -374,7 +374,7 @@ Theoretical limit of memory throughput
 • This is also a purely theoretical number, that we can compute based on the hardware characteristics.
 • The global memory of the Tesla T4 is GDDR6 with a throughput of 320 GB/s 320
 
-![[Pasted image 20251124212736.png]]
+![[images/Pasted image 20251124212736.png]]
 
 
 ## 7.3 Combining Both Metrics in a Single Model
@@ -385,12 +385,12 @@ Theoretical limit of memory throughput
 • ==Arithmetic intensity is computed by taking the number of instructions and diving them by the memory traffic that occurs while performing the work.==
 	• **算术强度（Arithmetic intensity）** 是通过将指令数量除以在执行这些工作时产生的内存流量来计算的。
 
-![[Pasted image 20251124212933.png]]
+![[images/Pasted image 20251124212933.png]]
 
 ## 7.4 The Roofline Model
 
 • We can now draw the theoretical limits into this plot:
-![[Pasted image 20251124213057.png]]
+![[images/Pasted image 20251124213057.png]]
 
 The solid line is the roofline that we can never cross.
 It is computed as the minimum of the peak performance π
@@ -400,10 +400,10 @@ and the peak bandwidth β times the arithmetic intensity I
 Ridge 山脊 
 山脊，山脉；屋脊；隆起部分，脊状突起；（大气层的）高压脊，高压带
 
-![[Pasted image 20251124213110.png]]
+![[images/Pasted image 20251124213110.png]]
 
 
-![[Pasted image 20251124213332.png]]
+![[images/Pasted image 20251124213332.png]]
 
 • Different applications have different arithmetic intensities: a vector addition just has a lower arithmetic intensity than a matrix multiply
 • So we can generally only try to improve performance by moving up on the plot not to the right by better utilizing the available resources
@@ -417,11 +417,11 @@ Ridge 山脊
 • Nsight Compute is Nvidia’s profiler for CUDA code
 • It can greatly help to help understand the performance of GPU applications and identify bottlenecks
 
-![[Pasted image 20251124113528.png]]
+![[images/Pasted image 20251124113528.png]]
 
-![[Pasted image 20251124113537.png]]
+![[images/Pasted image 20251124113537.png]]
 
-![[Pasted image 20251124113652.png]]
+![[images/Pasted image 20251124113652.png]]
 
 ## 8.1 Profiling With Nsight Compute
 
@@ -439,4 +439,4 @@ sudo /usr/local/cuda/bin/ncu -o profile -&set full ./CUDAapplication
 
 
 Investigating the Recorded Profile With the GUI
-![[Pasted image 20251124113757.png]]
+![[images/Pasted image 20251124113757.png]]
