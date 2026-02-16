@@ -1,5 +1,4 @@
 
-
 # 1 Setup
 
 
@@ -51,10 +50,7 @@ sudo apt update && sudo apt install -y \
 ```
 
 
-![](image/Pasted%20image%2020260211215447.png)
-
-
-## 1.2 Install Opencv
+## 1.2 Install OpenCV (Please skip it)
 
 ```bash
 mkdir -r opencv/source
@@ -188,11 +184,13 @@ Optional:
 
 
 
-- CUDA_ARCH_BIN 的选项在里面填入你当前电脑显卡的计算系数。
-    - 可以在这里找到对应显卡的算力：Nvidia显卡算力表  https://developer.nvidia.com/cuda/gpus\
-    - 访问 NVIDIA-Your GPU Compute Capability，下滑找到CUDA-Enabled GeForce and TiTAN Products后点击并查看自己显卡算力，下一步需要填写CUDA_ARCH_BIN参数。
-    - 使用nvidia-smi -L 查看NVIDIA-GPU型号。到https://developer.nvidia.com/cuda-gpus 中查找GPU型号对应的compute capability，即CUDA_ARCH_BIN。 比如我的电脑是T1200，CUDA_ARCH_BIN=7.5
-        - GPU 0: NVIDIA TITAN Xp (UUID: GPU-4c49dbc7-5541-25eb-3ab1-e963ff6602d5)  对应 6.1
+- **CUDA_ARCH_BIN**: Enter the compute capability coefficient of your current computer's graphics card here.
+    - You can find the compute capability for your corresponding graphics card here: NVIDIA GPU Compute Capability Table https://developer.nvidia.com/cuda/gpus
+    - Visit the link, scroll down to "CUDA-Enabled GeForce and TITAN Products," click on it, and look up your graphics card's compute capability. You will need to fill in the CUDA_ARCH_BIN parameter with this value in the next step.
+    - Use `nvidia-smi -L` to check your NVIDIA GPU model. Go to https://developer.nvidia.com/cuda-gpus and search for the compute capability corresponding to your GPU model. This is the CUDA_ARCH_BIN value. For example, my computer has a T1200, so CUDA_ARCH_BIN = 7.5.
+        - GPU 0: NVIDIA TITAN Xp (UUID: GPU-4c49dbc7-5541-25eb-3ab1-e963ff6602d5) corresponds to 6.1
+
+
 
 ![](image/Pasted%20image%2020260211144404.png)
 
@@ -619,15 +617,15 @@ all complied files is saved in  build/install
 after runs cmake 
 ```
 build/
-├── lib/                    # 编译生成的临时库文件 (.dylib)
-├── bin/                    # 编译生成的临时可执行文件
-├── modules/                # 每个模块的编译中间文件
-│   ├── core/              # core 模块的 .o 文件
-│   ├── imgproc/           # imgproc 模块的 .o 文件
+├── lib/                    # Temporary library files generated during compilation (.dylib)
+├── bin/                    # Temporary executable files generated during compilation
+├── modules/                # Intermediate compilation files for each module
+│   ├── core/              # .o files for the core module
+│   ├── imgproc/           # .o files for the imgproc module
 │   └── ...
-├── libopencv_core.4.13.0.dylib  # 编译生成的库文件
-├── opencv_version         # 版本测试程序
-└── CMakeCache.txt         # CMake 缓存配置
+├── libopencv_core.4.13.0.dylib  # Library files generated from compilation
+├── opencv_version         # Version test program
+└── CMakeCache.txt         # CMake cache configuration
 ```
 
 
@@ -667,7 +665,6 @@ OPENCV_DIR:C:\opencv\build\x64\vc14；
 ```bash
 # Step 1: Configure the library path
 # What it does: Creates/edits a configuration file for the dynamic linker/loader
-# 执行此命令后打开的可能是一个空白的文件，不用管，只需要在文件末尾添加:
 sudo gedit /etc/ld.so.conf.d/opencv.conf
 
 # File content to add:
@@ -709,12 +706,13 @@ python3 -c "import cv2; print(cv2.__version__)"
 
 ### 1.2.4 Opencv environment variable in MacOS
 
-Step 1: 配置动态库路径
+Step 1: Configure Dynamic Library Path
+
 
 ```
-# 1. macOS 不需要单独配置库路径，/usr/local/lib 默认已在搜索路径中
-# 验证方式：
-otool -L /usr/local/lib/libopencv_core.dylib   # 检查库依赖
+# 1. macOS does not require separate configuration of library paths, as /usr/local/lib is already in the default search path
+# Verification method:
+otool -L /usr/local/lib/libopencv_core.dylib   # Check library dependencies
 
 It returns
 /usr/local/lib/libopencv_core.dylib:
@@ -726,66 +724,67 @@ It returns
 
 ```
 
-如果确实需要添加自定义库路径：
+ if it needs to add library paths,
 ```
-# 编辑动态链接器环境变量（临时生效）
+# Edit dynamic linker environment variable (temporarily effective)
 export DYLD_LIBRARY_PATH=/usr/local/lib:$DYLD_LIBRARY_PATH
 
-# 永久生效（添加到 ~/.zshrc）
+# Make it permanent (add to ~/.zshrc)
 echo 'export DYLD_LIBRARY_PATH=/usr/local/lib:$DYLD_LIBRARY_PATH' >> ~/.zshrc
 source ~/.zshrc
 ```
 
 ---
 
-Step 2: 配置 pkg-config 路径
+Step 2: configure pkg-config path
 ```
-# 1. 编辑 zsh 配置文件
+# 1. Edit the zsh configuration file
 nano ~/.zshrc
-# 或使用其他编辑器：vim ~/.zshrc 或 code ~/.zshrc
+# Or use another editor: vim ~/.zshrc or code ~/.zshrc
 
-# 2. 添加以下内容：
+# 2. Add the following content:
 export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
 
-# 3. 使配置生效
+# 3. Apply the configuration
 source ~/.zshrc
 
-# 4. 验证
-echo $PKG_CONFIG_PATH    # 应包含 /usr/local/lib/pkgconfig
+# 4. Verify
+echo $PKG_CONFIG_PATH    # Should contain /usr/local/lib/pkgconfig
 ```
 
 
 ---
 
-Step3: 验证 OpenCV 安装
+Step3: verify OpenCV installation
 ```
-# 1. 检查 pkg-config 是否能找到 OpenCV
+# 1. Check if pkg-config can find OpenCV
 pkg-config --modversion opencv4
 
-# 如果失败，尝试 opencv（无数字）：
+# If it fails, try opencv (without number):
 pkg-config --modversion opencv
 
-# 2. 检查库文件是否存在
-ls -la /usr/local/lib/libopencv_*    # 查看安装的 OpenCV 库文件
+# 2. Check if library files exist
+ls -la /usr/local/lib/libopencv_*    # View installed OpenCV library files
 
-# 3. 检查 Python 绑定（如果编译了 Python 支持）
+# 3. Check Python bindings (if Python support was compiled)
 python3 -c "import cv2; print(cv2.__version__)"
 
-# 4. 查看库依赖
-otool -L /usr/local/lib/libopencv_core.dylib | grep cuda  # 检查 CUDA 支持（如果启用）
+# 4. View library dependencies
+otool -L /usr/local/lib/libopencv_core.dylib | grep cuda  # Check CUDA support (if enabled)
 ```
 
 ## 1.3 Test 
 
 ### 1.3.1 
 
-在opencv/samples/gpu目录下，执行任何一个.exe程序
+In the opencv/samples/gpu directory, execute any .exe program
+
 ```
 pkg-config opencv --modversion
 $4.5.5
 ```
 
-/usr/local/lib/pkgconfig/ 文件夹下包含opencv.pc文件
+/usr/local/lib/pkgconfig/   contain opencv.pc
 ```
 prefix=/usr/local
 exec_prefix=${prefix}
@@ -801,14 +800,15 @@ Cflags: -I${includedir}
 ```
 
 
-### 1.3.2 使用OpenCV处理图像
+### 1.3.2 Using OpenCV to Process Images
 
 
-1. 创建新文件夹，我命名为OpenCV-Test
-2. 进入文件夹后右键打开终端
-3. touch main.cpp 创建名为main.cpp的文件
-4. 右键main.cpp，使用IDE打开
-5. 复制代码：
+
+1. Create a new folder, I named it OpenCV-Test
+2. Enter the folder, then right-click to open the terminal
+3. Use 'touch main.cpp' to create a file named main.cpp
+4. Right-click on main.cpp and open it with an IDE
+5. Copy the code:
 
 ```c++
 #include <opencv2/opencv.hpp> 
@@ -819,30 +819,30 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
- //读取照片
- Mat image = imread("OpenCV_Logo.png");
+    // Read image
+    Mat image = imread("OpenCV_Logo.png");
 
- //检测失误
- if (image.empty()) 
- {
-  cout << "Could not open or find the image" << endl;
-  cin.get(); //等待键盘输入
-  return -1;
- }
+    // Check for failure
+    if (image.empty()) 
+    {
+        cout << "Could not open or find the image" << endl;
+        cin.get(); // Wait for keyboard input
+        return -1;
+    }
 
- String windowName = "OpenCV Test";	   //窗口名称
- namedWindow(windowName); 		   //创建新窗口
- imshow(windowName, image);		   //使用新窗口显示照片
- waitKey(0); 				   //等待键盘输入
- destroyWindow(windowName);		   //关闭所有窗口
- return 0;
+    String windowName = "OpenCV Test";     // Window name
+    namedWindow(windowName);                // Create new window
+    imshow(windowName, image);              // Display image in the new window
+    waitKey(0);                             // Wait for keyboard input
+    destroyWindow(windowName);               // Close all windows
+    return 0;
 }
 ```
 
 
-6. 网上随意下载张图片，放入与main.cpp相同的文件夹中。
-7. 更改图片路径。
-8. g++编译
+6. Laden Sie ein beliebiges Bild aus dem Internet herunter und legen Sie es in denselben Ordner wie main.cpp.
+7. Ändern Sie den Bildpfad.
+8. Mit g++ kompilieren.
 
 ```
 g++ main.cpp `pkg-config --libs --cflags opencv4` -o main
@@ -851,11 +851,11 @@ g++ main.cpp 'pkg-config --libs --cflags opencv4'  -o out -std=c++11
 ```
 
 
-9. 运行程序
+9. run programm 
 ./main
-10. 没有报错就是安装成功了
 
-### 1.3.3 验证 C++ 是否支持 CUDA 的 OpenCV
+
+### 1.3.3 Verify if C++ supports CUDA-enabled OpenCV
 
 ```
 创建 test_opencv.cpp
@@ -876,31 +876,27 @@ int main() {
 #endif
     return 0;
 }
-————————————————
-版权声明：本文为CSDN博主「Natsuagin」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
-原文链接：https://blog.csdn.net/Natsuago/article/details/145785243
+
 ```
 
 
 
-执行以下命令编译test_opencv.cpp：
+ compile test_opencv.cpp：
 
 ```
 g++ test_opencv.cpp -o test_opencv `pkg-config --cflags --libs opencv4` -I/usr/local/include/opencv4/opencv2 -L/usr/local/lib -Wl,-rpath,/usr/local/lib
 
-————————————————
-版权声明：本文为CSDN博主「Natsuagin」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
-原文链接：https://blog.csdn.net/Natsuago/article/details/145785243
 ```
 
 
-运行编译结果：
+run it 
 ```
 ./test_opencv
 
 ```
 
-如果显示opencv版本和CUDA is available.说明 OpenCV 已成功启用 CUDA（例如下图）。
+If it displays the OpenCV version and "CUDA is available," it means OpenCV has successfully enabled CUDA support (see example image below).
+
 
 ![](image/Pasted%20image%2020260211154152.png)
 
@@ -916,14 +912,14 @@ DFT is the mathematical formula, while FFT is the efficient algorithm for comput
 It is a mathematical tool that transforms a finite-length discrete-time sequence into a discrete-frequency sequence of the same length.
 
 
-For a complex sequence \( x[0], x[1], \dots, x[N-1] \) of length \( N \), the DFT is defined as:
+For a complex sequence ( `x[0]`, `x[1]`, $\dots$, `x[N-1]` ) of length ( N ), the DFT is defined as:
 
-$X[k] = \sum_{n=0}^{N-1} x[n] \cdot e^{-j 2\pi k n / N}, \quad k = 0, 1, \dots, N-1$
+$X[k] = \sum_{n=0}^{N-1} x[n] \cdot e^{-j \frac{2\pi}{N} k n }, \quad k = 0, 1, \dots, N-1$
 
 Where:
-- \( X[k] \) is the \( k \)-th frequency component (frequency domain representation),
-- \( j \) is the imaginary unit,
-- \( N \) is the sequence length.
+- `X[k]` is the k-th frequency component (frequency domain representation),
+-  j  is the imaginary unit,
+- N is the sequence length.
 
 
 Using the **twiddle factor**: $W_N = e^{-j \frac{2\pi}{N}}$
@@ -1006,16 +1002,154 @@ In real-world programming (e.g., MATLAB, Python's `numpy.fft.fft`, C's FFTW libr
 - Unless the sequence length is highly unusual (e.g., a large prime), your DFT will be computed using an **FFT algorithm**.
 
 
-# 3 Implementation
+# 3 How to Apply 2D Discrete Fourier Filtering to a 2D Grayscale Image
 
-## 3.1 What this program does 
+Applying a **2D Discrete Fourier Transform (DFT)** for frequency-domain filtering follows this core pipeline:
+**Image → Frequency Domain → Multiply by Filter → Back to Image**
+
+
+The complete 2D frequency-domain filtering pipeline is:
+
+1. Convert image to float.
+2. (Optional) Multiply by ((-1)^{x+y}) to center spectrum.
+3. Compute 2D DFT.
+4. Design frequency mask (H(u,v)).
+5. Multiply spectrum by mask.
+6. Compute IDFT.
+7. (If needed) Apply ((-1)^{x+y}) again.
+8. Take real part.
+9. Clip or normalize.
+10. Save output image.
+
+## 3.1 Treat the Grayscale Image as a 2D Signal
+
+A grayscale image is simply a matrix: f(x,y)
+
+with size $N \times M$.
+
+Each pixel represents an intensity value (typically 0–255 or floating-point).
+Mathematically, it is just a 2D discrete signal.
+
+
+## 3.2 Compute the 2D DFT to Obtain the Frequency Spectrum F(u,v)
+
+
+$F(u,v)=\sum_{x=0}^{N-1}\sum_{y=0}^{M-1} f(x,y),e^{-j2\pi(\frac{ux}{N}+\frac{vy}{M})}$
+
+Important properties:
+* F(u,v) is **complex-valued** (has magnitude and phase).
+* The **magnitude** tells how strong a frequency component is.
+* The **phase** encodes structural and spatial information.
+* Phase is extremely important — removing it destroys image structure.
+
+## 3.3 Spectrum Centering (Shift) is Important
+
+By default, the DC component (low frequency) appears in the corner of the spectrum.
+For filter design (especially circular masks), it is much easier if the low frequency is at the center.
+There are two equivalent common approaches:
+
+A) Frequency-domain shift (Quadrant swap)
+Swap the four quadrants of the spectrum so that the low frequency moves to the center.
+
+B) Spatial-domain pre-multiplication by ((-1)^{x+y})
+
+Before computing the DFT, multiply the image by: (-1)^{x+y}
+
+This is mathematically equivalent to shifting the spectrum to the center.
+If you use this approach, you must apply the same operation again after inverse transform to restore the spatial result.
+You must remain consistent — do not double-shift.
+
+
+## 3.4 Design the Frequency-Domain Filter H(u,v)
+
+A frequency filter is simply a mask with the same size as the spectrum.
+Filtering is done by pointwise multiplication: $G(u,v)=F(u,v)\cdot H(u,v)$
+
+Common filter types:
+
+1 Low-pass Filter (Blur / Denoise)
+* Keeps low frequencies (center region).
+* Suppresses high frequencies (details, noise).
+* Produces smoothing or blur.
+Example:
+* Gaussian low-pass (preferred because it reduces ringing)
+
+---
+2 High-pass Filter (Edge Enhancement)
+* Suppresses low frequencies.
+* Keeps high frequencies.
+* Enhances edges and fine details.
+
+Often defined as:
+$H_{hp}=1-H_{lp}$ 
+
+
+---
+3 
+Band-pass:
+
+* Keeps a specific frequency range.
+* Enhances textures.
+
+Band-stop:
+
+* Removes a specific frequency band.
+* Useful for removing structured noise patterns.
+
+---
+
+4 Notch Filter
+Periodic noise in images appears as **pairs of bright symmetric points** in the spectrum.
+A notch filter removes those specific frequency locations.
+Used for:
+* Removing stripe noise
+* Removing periodic interference
+
+
+
+## 3.5 Apply the Inverse DFT (IDFT)
+
+After filtering:
+
+$g(x,y)=\frac{1}{NM}\sum_{u=0}^{N-1}\sum_{v=0}^{M-1} G(u,v),e^{j2\pi(\frac{ux}{N}+\frac{vy}{M})} $
+Important:
+* The inverse transform requires normalization by (1/(NM)).
+* Some implementations apply scaling in forward transform instead.
+* Be consistent with your normalization strategy.
+
+If you used ((-1)^{x+y}) before the DFT, you must multiply again after IDFT to restore the image.
+
+## 3.6 Output Processing
+
+Due to numerical precision:
+* The imaginary part after IDFT should be nearly zero.
+* Use the real part of the result.
+
+Then:
+* Clip values to valid intensity range (e.g., 0–255).
+* Or normalize appropriately.
+
+## 3.7 How to Visualize the Spectrum
+
+Raw magnitude values span a very large dynamic range.
+
+To visualize:
+$S(u,v)=\log(1+|F(u,v)|)$
+
+Then normalize to 0–255 and save as a grayscale image.
+Without logarithmic scaling, the spectrum will look mostly black except for a few bright pixels.
+
+
+# 4 Implementation
+
+## 4.1 What this program does 
 
 This is a 2D DFT-based or 2D FFT-based image filtering on Linux:
 1. Generate synthetic **N×N grayscale** images (N=2048, A–F case each case has its own input image).)
 2. compute DFT or FFT
     1. Compute **2D DFT**(complex spectrum) using separable 1D DFT (O(N³), still true DFT) or 
     2. Perform a 2D FFT on the input image (with shift=true centering). using separable 1D FFT 
-3. Apply frequency-domain filters (low-pass, high-pass, band-pass, auto notch, band-stop , auto-notch.)
+3. Apply frequency-domain filters (low-pass, high-pass, band-pass, band-stop , auto-notch.)
 4. Compute **2D IDFT or 2D IFFT** back to spatial domain
 5. Save 
     1. output images as PGM 
@@ -1024,7 +1158,7 @@ This is a 2D DFT-based or 2D FFT-based image filtering on Linux:
    * `metrics.csv`: per-image hash (u8 + f64) and (if a reference image exists) error statistics (L2/RMSE/max_abs/PSNR) a reference
 
 
-## 3.2 How to run and what arguments mean
+## 4.2 How to run and what arguments mean
 
 ```bash
 ./dft_benchmark_cpu N runs outdir
@@ -1034,7 +1168,7 @@ This is a 2D DFT-based or 2D FFT-based image filtering on Linux:
 * `runs`: how many times to repeat timed stages (DFT/mask/IDFT) and average
 * `outdir`: output directory for images and CSV files
 
-## 3.3 Core data types and utilities
+## 4.3 Core data types and utilities
 
 Timing: `Timer` and `avg_ms()`
 * `Timer` measures elapsed time in milliseconds.
@@ -1073,7 +1207,7 @@ So for visualization, the code does min-max scaling to `[0,255]`.
 That's why B and C store "*_norm.pgm".
 
 
-## 3.4 Spectrum visualization
+## 4.4 Spectrum visualization
 
 1`spectrum_to_image(F, w, h, shift_center)`
 Purpose: turn a complex spectrum into a viewable grayscale image.
@@ -1101,7 +1235,7 @@ spectrum_to_image(F, N, N, /*shift_center=*/false)
 If you mistakenly set `shift_center=true` here, you would "re-shift" and the spectrum would look wrong (DC would move away from center again).
 
 
-## 3.5 saving spectrum for each saved image
+## 4.5 saving spectrum for each saved image
 
 
 1 `save_spectrum_from_F(fname, F)`
@@ -1125,7 +1259,7 @@ So: total runtime will increase, but your benchmark timing numbers remain compar
 
 
 
-## 3.6 DFT/IDFT implementation in CPU
+## 4.6 DFT/IDFT implementation in CPU
 
 1 `Twiddle1D`
 
@@ -1170,9 +1304,9 @@ Performs the inverse in two stages:
 ---
 
 
-## 3.7 FFT/IFFT implementation in CPU
+## 4.7 FFT/IFFT implementation in CPU
 
-### 3.7.1 fft1d_inplace()
+### 4.7.1 fft1d_inplace()
 
 This is a standard iterative radix-2 Cooley–Tukey FFT:
 
@@ -1216,7 +1350,7 @@ So for the 2D IFFT:
     - The combined factor is 1/(N*N), matching your DFT version where idft2 multiplies by inv = 1/(N*N) at the end.
 
 
-### 3.7.2 2D FFT: fft2()
+### 4.7.2 2D FFT: fft2()
 
 `std::vector<cd> fft2(const Image& img, bool shift=true)`
 It is separable (the same strategy as your DFT version):
@@ -1238,7 +1372,7 @@ Apply 1D FFT on each row and store results as F(u,y).
 Apply 1D FFT on each column and write back to F(u,v).
 The output F is a N*N complex array with the same memory layout as the DFT version: id(x,y)=y*N+x.
 
-### 3.7.3 2D IFFT: ifft2()
+### 4.7.3 2D IFFT: ifft2()
 
 `Image ifft2(const std::vector<cd>& F, int N, bool shift=true)`
 
@@ -1252,7 +1386,7 @@ This is the reverse direction:
 Note: Like your DFT version, it assumes the input image is real-valued, so it uses only .real() for the final image.
 
 
-## 3.8 Synthetic input generation
+## 4.8 Synthetic input generation
 
 1  `make_scene_mix(N)`
 
@@ -1285,7 +1419,7 @@ Adds multiple sinusoidal patterns:
 
 ---
 
-## 3.9 Frequency-domain masks (filters) and apply_mask()
+## 4.9 Frequency-domain masks (filters) and apply_mask()
 
 Mask generation functions reuse exactly the same logic as your DFT version:
 
@@ -1306,7 +1440,7 @@ apply_mask(F,H) is elementwise multiplication:
 G[i] = F[i] * H[i];
 ```
 
-### 3.9.1 Gaussian low-pass 
+### 4.9.1 Gaussian low-pass 
 `gaussian_lowpass`: smooth, reduces ringing compared to ideal low-pass
 
 In the frequency domain, the Gaussian low-pass filter is defined as:
@@ -1361,7 +1495,7 @@ std::vector<double> gaussian_lowpass(int N, double sigma)
 ```
 
 
-### 3.9.2 Gaussian high-pass
+### 4.9.2 Gaussian high-pass
 `gaussian_highpass = 1 - gaussian_lowpass`
 
 Enhances edges and fine details by suppressing low frequencies and keeping high-frequency components.
@@ -1376,7 +1510,7 @@ std::vector<double> gaussian_highpass(int N, double sigma) {
 ```
 
 
-### 3.9.3 Important Note (Ideal filter vs Gaussian filter )
+### 4.9.3 Important Note (Ideal filter vs Gaussian filter )
 
 This is an ideal filter
 - That means:
@@ -1404,7 +1538,7 @@ What Does Hard Cutoff Look Like in the Frequency Domain?
 The boundary is a sharp circular edge
 ![](image/Pasted%20image%2020260213200217.png)
 
-### 3.9.4 Ideal band-pass 
+### 4.9.4 Ideal band-pass 
 
 Preserves structures within a specific frequency range, emphasizing textures or patterns of a certain scale.
 
@@ -1443,7 +1577,7 @@ Good for:
 
 ---
 
-#### 3.9.4.1 mathematical interpretation 
+#### 4.9.4.1 mathematical interpretation 
 
 This function creates an **Ideal Band-Pass Filter (IBPF)** in the frequency domain.
 
@@ -1476,8 +1610,8 @@ This creates a circular "ring" in frequency space.
 
 
 
-
-#### 3.9.4.2 Code 
+ 
+#### 4.9.4.2 Code 
 
 ```c++
 std::vector<double> ideal_bandpass(int N, double r0, double r1) {
@@ -1497,7 +1631,7 @@ std::vector<double> ideal_bandpass(int N, double r0, double r1) {
 
 
 
-### 3.9.5 Ideal band-stop
+### 4.9.5 Ideal band-stop
 
 Removes structures within a specific frequency range, suppressing periodic patterns or unwanted frequency components.
 
@@ -1513,7 +1647,7 @@ std::vector<double> ideal_bandstop(int N, double r0, double r1) {
 ```
 
 
-### 3.9.6 `apply_mask`
+### 4.9.6 `apply_mask`
 
 apply_mask(F,H) is elementwise multiplication:
 
@@ -1529,7 +1663,7 @@ std::vector<cd> apply_mask(const std::vector<cd>& F, const std::vector<double>& 
 
 
 
-### 3.9.7 Auto notch mask 
+### 4.9.7 Auto notch mask 
 
 Goal: detect periodic noise spikes automatically.
 automatically detects and suppresses strong periodic noise frequencies in the spectrum while preserving the rest of the signal.
@@ -1584,7 +1718,7 @@ std::vector<double> auto_notch_mask(const std::vector<cd>& F, int N,
 }
 ```
 
-## 3.10 Metrics: hashes + error measures 
+## 4.10 Metrics: hashes + error measures 
 
 1 Hashing
 
@@ -1613,7 +1747,7 @@ These are written to `metrics.csv`.
 
 
 
-## 3.11 Performance logging: `performance.csv`
+## 4.11 Performance logging: `performance.csv`
 
 For each test case, it records stages like:
 * `DFT2`
@@ -1626,7 +1760,7 @@ avg_ms(runs, fn) runs the stage runs times and records the average elapsed time.
 
 Note: It used solely to generate spectrum images is not included in performance timing, because save_spectrum_from_img computes a spectrum only for output purposes.
 
-## 3.12 What each test case A–F produces (including spectrum outputs)
+## 4.12 What each test case A–F produces (including spectrum outputs)
 
 - A Gaussian low-pass blur: scene_mix → FFT → gaussian lowpass → IFFT → blur
 - B Gaussian high-pass edges: scene_mix → highpass → IFFT → edges → normalize for visualization
@@ -1698,7 +1832,7 @@ For each test, you save:
   * band-stop output + spectrum
 
 
-## 3.13 Outputs summary
+## 4.13 Outputs summary
 
 In `outdir` you will get:
 * Many `.pgm` images:
@@ -1709,20 +1843,20 @@ In `outdir` you will get:
   * spectrum images (usually with no reference)
 
 
-# 4 optimization  using CUDA techniques
+# 5 Optimization using CUDA techniques
 
 > The DFT and FFT algorithms in the chapters above are optimized using the same common CUDA optimization techniques. Next, I will use the DFT as an example to explain how the optimization is done.
 
 Key points (GPU vs CPU)
-1. **Memory coalescing for the "column pass"** (transpose trick) — CPU doesn't care; GPU must.
-2. **Fast transpose** using shared memory + padding — CPU doesn't need a transpose kernel.
-3. **Avoid large twiddle table bandwidth** by using sincos + recurrence — CPU uses tables; GPU avoids them.
-4. **`__restrict__`** to reduce aliasing assumptions — CPU version doesn't.
-5. **Fused final pass** (real + scale + invshift) — CPU does this in a post-loop; GPU fuses to reduce kernels and global traffic.
+- Converting column DFT into row DFT via transpose to ensure coalesced memory access
+- Using shared-memory tiled transpose with padding to avoid bank conflicts
+- Computing twiddle factors via recurrence instead of loading large tables
+- Using `__restrict__`to enable better compiler optimization
+- Fusing scaling and inverse shift into the final kernel to reduce global memory traffic and kernel launches
 
 The GPU is still **O(N³)** overall (same complexity class as CPU DFT, just massively parallel).
 
-## 4.1 Pipeline comparison (CPU vs GPU) 
+## 5.1 Pipeline comparison (CPU vs GPU) 
 
 1 CPU pipeline (conceptual)
 
@@ -1752,7 +1886,7 @@ complex_to_img_scale_invshift<<<...>>>  // fused scale+invshift
 
 
 
-## 4.2 Baseline difference: CPU uses precomputed twiddle table; GPU computes twiddle on the fly
+## 5.2 Baseline difference: CPU uses precomputed twiddle table; GPU computes twiddle on the fly
 
 1 CPU (precompute full twiddle table `N*N`)
 
@@ -1816,7 +1950,7 @@ for(int x=0; x<n; ++x){
 
 ---
 
-## 4.3 Optimization 1: Transpose-based 2D DFT to avoid strided column access
+## 5.3 Optimization 1: Transpose-based 2D DFT to avoid strided column access
 
 
 After doing "row DFT", you must do "column DFT".
@@ -1870,7 +2004,7 @@ transpose_cdouble2<32,8><<<grdT, blkT, 0, stream>>>(d_c1, d_c0, n);
 
 
 
-## 4.4 Optimization 2: Tiled shared-memory transpose + padding to reduce bank conflicts
+## 5.4 Optimization 2: Tiled shared-memory transpose + padding to reduce bank conflicts
 
 CPU transpose?
 CPU version doesn't need a transpose kernel at all (it just gathers columns).
@@ -1913,7 +2047,7 @@ __global__ void transpose_cdouble2(const cdouble2* __restrict__ in,
 * Global reads and writes are both **coalesced**.
 * Shared memory padding `TILE_DIM+1` reduces **bank conflicts** for transposed access.
 
-## 4.5 Optimization 3: Twiddle recurrence + `sincos()` (reduce memory traffic)
+## 5.5 Optimization 3: Twiddle recurrence + `sincos()` (reduce memory traffic)
 
 1 CPU (table lookup, no trig inside main loop)
 
@@ -1946,7 +2080,7 @@ for(int x=0; x<n; ++x){
 
 ---
 
-## 4.6 Optimization : `__restrict__` pointers (help compiler optimize memory accesses)
+## 5.6 Optimization : `__restrict__` pointers (help compiler optimize memory accesses)
 
 1 
 CPU functions do not use `restrict` (C++ doesn't commonly apply it here).
@@ -1968,7 +2102,7 @@ __global__ void apply_mask_kernel(const cdouble2* __restrict__ F,
 Tells the compiler that pointers do **not alias**, enabling better instruction scheduling and fewer redundant loads.
 
 
-## 4.7 Optimization 5: Fuse scale + inverse shift into the final output kernel
+## 5.7 Optimization 5: Fuse scale + inverse shift into the final output kernel
 
 1 CPU (final scaling + inverse shift is done in a loop on host)
 
@@ -2015,37 +2149,37 @@ __global__ void complex_to_img_scale_invshift(const cdouble2* __restrict__ in,
 
 
 
-# 5 Result
+# 6 Result
 
-## 5.1 image (2048x2048 pixel)
+## 6.1 image (2048x2048 pixel)
 
 
-### 5.1.1 Original Image for Testcase A,B,C
+### 6.1.1 Original Image for Testcase A,B,C
 
 ![](image/Pasted%20image%2020260213225525.png)
 
-### 5.1.2 Testcase A: Gaussian low-pass filter -> image bluring
+### 6.1.2 Testcase A: Gaussian low-pass filter -> image bluring
 
 
 ![](image/Pasted%20image%2020260213225329.png)
 
 
-### 5.1.3 Testcase B: Gaussian high-pass filter  ->  Edge Detection
+### 6.1.3 Testcase B: Gaussian high-pass filter  ->  Edge Detection
 
 
 ![](image/Pasted%20image%2020260213225544.png)
 
-### 5.1.4 Testcase C: bandpass filter -> Texture Extraction
+### 6.1.4 Testcase C: bandpass filter -> Texture Extraction
 
 ![](image/Pasted%20image%2020260213225621.png)
 
 
-### 5.1.5 Testcase E: Periodic noise -> auto notch denoise (auto only)
+### 6.1.5 Testcase E: Periodic noise -> auto notch denoise (auto only)
 
 ![](image/Pasted%20image%2020260213225837.png)
 
 
-### 5.1.6 Testcase F:  band-stop filter -> Radial rings
+### 6.1.6 Testcase F:  band-stop filter -> Radial rings
 
 
 orginale image
@@ -2058,7 +2192,7 @@ after filtering
 
 
 
-### 5.1.7 Testcase D: Checkerboard stress
+### 6.1.7 Testcase D: Checkerboard stress
 
 it:
 - Generates a checkerboard image (high-frequency pattern).
@@ -2078,9 +2212,9 @@ filtered image
 
 
 
-## 5.2 metrics and performance 
+## 6.2 metrics and performance 
 
-### 5.2.1 dft_cpu
+### 6.2.1 dft_cpu
 
 metrics.csv
 ```
@@ -2146,7 +2280,7 @@ F_radial_rings_bandstop,2048,IDFT2,31627.2
 ```
 
 
-### 5.2.2 fft_cpu
+### 6.2.2 fft_cpu
 
 metrics.csv
 ```
@@ -2212,7 +2346,7 @@ F_radial_rings_bandstop,2048,IFFT2,340.26
 
 
 
-### 5.2.3 dft_gpu
+### 6.2.3 dft_gpu
 
 metrics.csv
 ```
@@ -2277,7 +2411,7 @@ F_radial_rings_bandstop,2048,IDFT2,909.108
 ```
 
 
-### 5.2.4 fft_gpu
+### 6.2.4 fft_gpu
 
 
 metrics.csv
@@ -2343,26 +2477,26 @@ F_radial_rings_bandstop,2048,Mask_bandstop_ideal,4.15549
 F_radial_rings_bandstop,2048,IFFT2,15.1636
 ```
 
-## 5.3 Performance comparison
+## 6.3 Performance comparison
 
-total time: 
+total time in ms : 
 
-| algorithm  | A           | B           | C           | D           | E           | F           |
-| ---------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- |
-| DFT in cpu | 108014.7776 | 114964.3412 | 115416.3875 | 110225.1407 | 113494.5547 | 111946.6822 |
-| FFT in cpu | 684.5656    | 661.4348    | 690.1388    | 686.0981    | 868.5792    | 683.2903    |
-| DFT in gpu | 1824.0382   | 1827.4294   | 1827.7997   | 1828.4971   | 2025.8535   | 1828.8766   |
-| FFT in gpu | 40.0649     | 40.1767     | 40.1161     | 40.5373     | 235.4811    | 39.7376     |
+| algorithm execution time (ms) | A: lowpass  | B: highpass | C: bandpass | D: Checkerboard Stress | E: Auto-notch denoise | F: bandstop |
+| ----------------------------- | ----------- | ----------- | ----------- | ---------------------- | --------------------- | ----------- |
+| DFT in cpu                    | 108014.7776 | 114964.3412 | 115416.3875 | 110225.1407            | 113494.5547           | 111946.6822 |
+| FFT in cpu                    | 684.5656    | 661.4348    | 690.1388    | 686.0981               | 868.5792              | 683.2903    |
+| DFT in gpu                    | 1824.0382   | 1827.4294   | 1827.7997   | 1828.4971              | 2025.8535             | 1828.8766   |
+| FFT in gpu                    | 40.0649     | 40.1767     | 40.1161     | 40.5373                | 235.4811              | 39.7376     |
 
 ---
 
 
-| Algorithm Comparison     |   A    |   B    |   C    |   D    |   E    |   F    |
-|--------------------------|--------|--------|--------|--------|--------|--------|
-| DFTcpu_vs_FFTcpu         | 0.9937 | 0.9942 | 0.9940 | 0.9938 | 0.9923 | 0.9939 |
-| DFTcpu_vs_DFTgpu         | 0.9831 | 0.9841 | 0.9842 | 0.9834 | 0.9822 | 0.9837 |
-| FFTcpu_vs_FFTgpu         | 0.9415 | 0.9393 | 0.9419 | 0.9409 | 0.7289 | 0.9418 |
-| DFTcpu_vs_FFTgpu         | 0.9996 | 0.9997 | 0.9997 | 0.9996 | 0.9979 | 0.9996 |
+| Algorithm Comparison | A: lowpass | B: highpass | C: bandpass | D: Checkerboard Stress | E: Auto-notch denoise | F: bandstop |
+| -------------------- | ---------- | ----------- | ----------- | ---------------------- | --------------------- | ----------- |
+| DFTcpu_vs_FFTcpu     | 0.9937     | 0.9942      | 0.9940      | 0.9938                 | 0.9923                | 0.9939      |
+| DFTcpu_vs_DFTgpu     | 0.9831     | 0.9841      | 0.9842      | 0.9834                 | 0.9822                | 0.9837      |
+| FFTcpu_vs_FFTgpu     | 0.9415     | 0.9393      | 0.9419      | 0.9409                 | 0.7289                | 0.9418      |
+| DFTcpu_vs_FFTgpu     | 0.9996     | 0.9997      | 0.9997      | 0.9996                 | 0.9979                | 0.9996      |
 
 - First row: the absolute value of (DFT in CPU minus FFT in CPU) divided by DFT in CPU.
 - Second row: the absolute value of (DFT in CPU minus DFT in GPU) divided by DFT in CPU.
@@ -2372,12 +2506,12 @@ total time:
 
 ---
 
-| Algorithm Comparison              |    A      |    B      |    C      |    D      |    E      |    F      |
-|----------------------------------|-----------|-----------|-----------|-----------|-----------|-----------|
-| abs(DFTcpu-FFTcpu)/FFTcpu        | 156.7859  | 172.8105  | 166.2365  | 159.6551  | 129.6669  | 162.8347  |
-| abs(DFTcpu-DFTgpu)/DFTgpu        |  58.2174  |  61.9104  |  62.1450  |  59.2818  |  55.0231  |  60.2106  |
-| abs(FFTcpu-FFTgpu)/FFTgpu        |  16.0864  |  15.4631  |  16.2035  |  15.9251  |   2.6885  |  16.1951  |
-| abs(DFTcpu-FFTgpu)/FFTgpu        | 2694.9952 | 2860.4680 | 2876.0590 | 2718.1042 |  480.9688 | 2816.1475 |
+| Algorithm Comparison      | A: lowpass | B: highpass | C: bandpass | D: Checkerboard Stress | E: Auto-notch denoise | F: bandstop |
+| ------------------------- | ---------- | ----------- | ----------- | ---------------------- | --------------------- | ----------- |
+| abs(DFTcpu-FFTcpu)/FFTcpu | 156.7859   | 172.8105    | 166.2365    | 159.6551               | 129.6669              | 162.8347    |
+| abs(DFTcpu-DFTgpu)/DFTgpu | 58.2174    | 61.9104     | 62.1450     | 59.2818                | 55.0231               | 60.2106     |
+| abs(FFTcpu-FFTgpu)/FFTgpu | 16.0864    | 15.4631     | 16.2035     | 15.9251                | 2.6885                | 16.1951     |
+| abs(DFTcpu-FFTgpu)/FFTgpu | 2694.9952  | 2860.4680   | 2876.0590   | 2718.1042              | 480.9688              | 2816.1475   |
 - The first row represents the absolute value of DFT on CPU minus FFT on CPU, divided by FFT on CPU.
 - The second row represents the absolute value of DFT on CPU minus DFT on GPU, divided by DFT on GPU.
 - The third row represents the absolute value of FFT on CPU minus FFT on GPU, divided by FFT on GPU.
