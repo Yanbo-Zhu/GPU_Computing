@@ -1038,9 +1038,16 @@ $F(u,v)=\sum_{x=0}^{N-1}\sum_{y=0}^{M-1} f(x,y),e^{-j2\pi(\frac{ux}{N}+\frac{vy}
 
 Important properties:
 * F(u,v) is **complex-valued** (has magnitude and phase).
+    * F(u,v)=a(u,v)+jb(u,v)
+    * It can also be written in polar (magnitude–phase) form:  $F(u,v) = |F(u,v)| e^{j\phi(u,v)}$
+    * Each F(u,v) corresponds to a 2D sinusoidal component.
 * The **magnitude** tells how strong a frequency component is.
-* The **phase** encodes structural and spatial information.
-* Phase is extremely important — removing it destroys image structure.
+    * $|F(u,v)| = \sqrt{a^2 + b^2}$
+* The **phase** encodes structural and spatial, positional information.
+    * $\phi(u,v) = \arctan\left(\frac{b}{a}\right)$
+    * The phase determines how that sinusoid is positioned in space before all components are summed together.
+    * Phase is extremely important — removing it destroys image structure.
+
 
 ## 3.3 Spectrum Centering (Shift) is Important
 
