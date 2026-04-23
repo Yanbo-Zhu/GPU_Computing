@@ -1,1 +1,5 @@
-/.obsidian
+.obsidian/
+.idea/
+.vscode/
+.DS_Store
+.venv/
